@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config()
+const User=require('./user');
 const app = express()
 app.use(express.json())
 const port = 3000
@@ -9,7 +10,6 @@ mongoose.connect(
     { useNewUrlParser: true, useUnifiedTopology: true },
     (req, res) => {
         console.log('connected to mongodb');
-        console.log(res);
     })
 
 
@@ -18,10 +18,15 @@ app.get('/users', (req, res) => {
     res.json({ users: { users } });
 });
 
-app.post("/users",async (req, res) => {
+app.post("/create_users",async (req, res) => {
+ try{
     const new_user = new User(req.body);
     await new_user.save();
     res.json(new_user);
+ }catch(err){
+    console.log(err);
+ }
+
 })
 
 app.listen(port, () => console.log(`Example app listening on port port!`))
