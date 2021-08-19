@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config()
 const app = express()
+app.use(express.json())
 const port = 3000
 mongoose.connect(
     process.env.db,
@@ -11,15 +12,16 @@ mongoose.connect(
         console.log(res);
     })
 
-app.use(express.json())
+
 app.get('/users', (req, res) => {
     let users = ['Talha', 'Hassan', 'Mazhar', 'Hafsa', 'Mazhar'];
     res.json({ users: { users } });
-}
-);
-app.post('/users', (req, res) => {
-    console.log(req.body.name);
-    res.send(`User is created successfully ${req.body.name} from ${req.body.city}`);
-
 });
+
+app.post("/users",async (req, res) => {
+    const new_user = new User(req.body);
+    await new_user.save();
+    res.json(new_user);
+})
+
 app.listen(port, () => console.log(`Example app listening on port port!`))
